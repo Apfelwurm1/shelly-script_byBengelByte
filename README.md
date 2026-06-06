@@ -31,16 +31,40 @@ Ein smartes Skript für den **Shelly 1PM / 1 Mini Gen3 / Gen4**, das ein einzeln
 
 ---
 
-## 🛠️ Installationsanleitung (Beispiel für 2-Kanal)
+## 🛠️ Installationsanleitungen
 
-### 1. Virtuelle Komponenten auf dem Shelly anlegen
+### A. Einrichtung für die 2-Kanal-Version (z. B. Badezimmer)
+
+#### 1. Virtuelle Komponenten auf dem Shelly anlegen
 Erstelle folgende virtuelle Komponenten im Shelly-Webinterface oder in der App:
 *   `number:200` (Name: `Motion_Time`) -> Laufzeit bei Bewegung in Sekunden (z. B. Min: 1, Max: 1800, Default: 240)
 *   `number:201` (Name: `Motion_LUX`) -> Helligkeitsschwelle in Lux (z. B. Min: 0, Max: 500, Default: 30)
 *   `number:202` (Name: `Manuell_time`) -> Manuelle Duschlaufzeit in Minuten (z. B. Min: 1, Max: 99, Default: 30)
 *   `number:203` (Name: `Relais`) -> Schaltmodus (1 = Nur L1, 2 = Nur L2, 3 = Beide Kanäle, Default: 3)
 
-### 2. Skript installieren
-1. Erstelle im Shelly-Editor ein neues Skript (z. B. `LichtAutomatik`).
+#### 2. Skript installieren
+1. Erstelle im Shelly-Editor ein neues Skript (z. B. `LichtAutomatik2Kanal`).
 2. Kopiere den Code aus [`shelly_2pm_blu_motion_automation.js`](file:///home/admin/shelly-script_byBengelByte/shelly-2pm-blu-motion-automation/shelly_2pm_blu_motion_automation.js) hinein.
+3. Speichere das Skript, aktiviere den Schalter **"Run on startup"** (Autostart) und starte das Skript.
+
+---
+
+### B. Einrichtung für die 1-Kanal-Version (z. B. Flur / Küche)
+
+#### 1. Virtuelle Komponenten auf dem Shelly anlegen
+Erstelle folgende virtuelle Komponenten im Shelly-Webinterface oder in der App:
+*   `number:200` (Name: `Motion_Time`) -> Helligkeits-Schwelle / Lux Threshold (z. B. Min: 0, Max: 500, Default: 30)
+*   `number:201` (Name: `Motion_Time_Sec`) -> Laufzeit bei Bewegung in Sekunden (z. B. Min: 1, Max: 1800, Default: 60)
+*   `number:202` (Name: `Manuell_Time_Min`) -> Manuelle Laufzeit in Minuten (z. B. Min: 1, Max: 99, Default: 30)
+*   `text:200` (Name: `IP_Duo` / optional, falls `RelayMode = false` genutzt wird) -> IP-Adresse der remote Shelly Duo Lampe (z. B. `192.168.200.121`)
+
+*Hinweis zur ID-Zuordnung:* Die IDs im 1-Kanal-Skript sind standardmäßig so gemappt:
+*   `VcIdLux: 200` (entspricht `number:200`)
+*   `VcIdMotionTime: 201` (entspricht `number:201`)
+*   `VcIdManualTime: 202` (entspricht `number:202`)
+*   `VcIdIpDuo: 200` (entspricht `text:200`)
+
+#### 2. Skript installieren
+1. Erstelle im Shelly-Editor ein neues Skript (z. B. `LichtAutomatik1Kanal`).
+2. Kopiere den Code aus [`shelly_1pm_blu_motion_automation.js`](file:///home/admin/shelly-script_byBengelByte/shelly-1pm-blu-motion-automation/shelly_1pm_blu_motion_automation.js) hinein.
 3. Speichere das Skript, aktiviere den Schalter **"Run on startup"** (Autostart) und starte das Skript.
