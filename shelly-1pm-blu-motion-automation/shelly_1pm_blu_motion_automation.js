@@ -1,5 +1,5 @@
 /**
- * SHELLY 1PM / 1 MINI GEN3/GEN4 - 1-CHANNEL LIGHT BLU MOTION AUTOMATION V1.1
+ * SHELLY 1PM / 1 MINI GEN3/GEN4 - 1-CHANNEL LIGHT BLU MOTION AUTOMATION V1.2
  * ---------------------------------------------
  * Requirements: Set input to "Detached" mode in the Shelly settings.
  * (This script will automatically configure it to detached on startup)
@@ -225,6 +225,9 @@ Shelly.addEventHandler(function(ev) {
   }
   // 4. APP / CLOUD / VOICE CONTROL
   else if (ev.component === "switch:0" && typeof ev.info.output === "boolean") {
+     // Ignore events triggered by the script itself
+     if (ev.info.source === "script") return;
+
      let out = ev.info.output;
      if (out === true) {
        if (!motionActive && !isManualMode) {

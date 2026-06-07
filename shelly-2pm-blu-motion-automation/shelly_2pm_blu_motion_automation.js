@@ -1,5 +1,5 @@
 /**
- * SHELLY 2PM GEN3/GEN4 - 2-CHANNEL LIGHT BLU MOTION AUTOMATION V1.1
+ * SHELLY 2PM GEN3/GEN4 - 2-CHANNEL LIGHT BLU MOTION AUTOMATION V1.2
  * ---------------------------------------------
  * Requirements: Set inputs to "Detached" mode in the Shelly settings.
  * (This script will automatically configure them to detached on startup)
@@ -189,6 +189,9 @@ Shelly.addEventHandler(function(event) {
 
     // App/Cloud/Voice Assistant Control (Switch output changes)
     if ((event.component === "switch:0" || event.component === "switch:1") && event.info && typeof event.info.output === "boolean") {
+        // Ignore events triggered by the script itself (e.g. motion triggers or blink feedback)
+        if (event.info.source === "script") return;
+
         let id = (event.component === "switch:0") ? 0 : 1;
         let isOn = event.info.output;
         
