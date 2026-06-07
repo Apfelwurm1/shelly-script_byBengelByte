@@ -1,5 +1,5 @@
 /**
- * SHELLY 2PM GEN3/GEN4 - 2-CHANNEL LIGHT BLU MOTION AUTOMATION V1.0
+ * SHELLY 2PM GEN3/GEN4 - 2-CHANNEL LIGHT BLU MOTION AUTOMATION V1.1
  * ---------------------------------------------
  * Requirements: Set inputs to "Detached" mode in the Shelly settings.
  * (This script will automatically configure them to detached on startup)
@@ -174,7 +174,10 @@ Shelly.addEventHandler(function(event) {
     // Motion Sensor Event
     if (event.component === "bthomesensor:" + IDS.SensorMotion) {
         if (event.info && (event.info.value === true || event.info.value === 1)) {
-            handleMotion();
+            // Defer motion processing by 100ms to allow lux status to update in the database first
+            Timer.set(100, false, function() {
+                handleMotion();
+            });
         }
     }
 
@@ -203,14 +206,6 @@ Shelly.addEventHandler(function(event) {
                 lastLightOffTs = Date.now();
             }
         }
-    }
-});
-
-// Watchdog (Safety polling in case events are missed)
-Timer.set(5000, true, function() {
-    let mot = Shelly.getComponentStatus("bthomesensor", IDS.SensorMotion);
-    if (mot && (mot.value === true || mot.value === 1)) {
-        handleMotion();
     }
 });
 

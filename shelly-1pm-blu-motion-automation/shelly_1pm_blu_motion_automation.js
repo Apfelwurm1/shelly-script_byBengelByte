@@ -1,5 +1,5 @@
 /**
- * SHELLY 1PM / 1 MINI GEN3/GEN4 - 1-CHANNEL LIGHT BLU MOTION AUTOMATION V1.0
+ * SHELLY 1PM / 1 MINI GEN3/GEN4 - 1-CHANNEL LIGHT BLU MOTION AUTOMATION V1.1
  * ---------------------------------------------
  * Requirements: Set input to "Detached" mode in the Shelly settings.
  * (This script will automatically configure it to detached on startup)
@@ -205,7 +205,12 @@ Shelly.addEventHandler(function(ev) {
 
   // 1. MOTION
   if (ev.component === "bthomesensor:" + CFG.IdMotion) {
-    if (ev.info.value === true || ev.info.value === 1) onMotionDetected();
+    if (ev.info.value === true || ev.info.value === 1) {
+        // Defer motion processing by 100ms to allow lux status to update in the database first
+        Timer.set(100, false, function() {
+            onMotionDetected();
+        });
+    }
   }
   // 2. LUX
   else if (ev.component === "bthomesensor:" + CFG.IdLux) {
@@ -239,19 +244,6 @@ Shelly.addEventHandler(function(ev) {
   // 5. VIRTUAL COMPONENTS LIVE SYNC
   else if (typeof ev.component === "string" && (ev.component.indexOf("number:") === 0 || ev.component.indexOf("text:") === 0)) {
       syncConfigFromComponents();
-  }
-});
-
-// ---------- POLLING BACKUP ----------
-Timer.set(2500, true, function() {
-  let ls = Shelly.getComponentStatus("bthomesensor", CFG.IdLux);
-  if (ls && typeof ls.value === "number") lastLux = ls.value;
-  
-  if (!motionActive && !isManualMode && (Date.now() > manualOffUntil)) {
-     let ms = Shelly.getComponentStatus("bthomesensor", CFG.IdMotion);
-     if (ms && (ms.value === true || ms.value === 1)) {
-       if(checkLux()) onMotionDetected();
-     }
   }
 });
 
